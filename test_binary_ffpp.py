@@ -66,9 +66,9 @@ if __name__ == '__main__':
 
     ##################################################################################
 
-    tol_label = np.array([], dtype=np.float)
-    tol_pred = np.array([], dtype=np.float)
-    tol_pred_prob = np.array([], dtype=np.float)
+    tol_label = np.array([], dtype=float)
+    tol_pred = np.array([], dtype=float)
+    tol_pred_prob = np.array([], dtype=float)
 
     count = 0
     loss_test = 0
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     for img_data, labels_data in tqdm(dataloader_test):
 
         labels_data[labels_data > 1] = 1
-        img_label = labels_data.numpy().astype(np.float)
+        img_label = labels_data.numpy().astype(float)
 
         if opt.gpu_id >= 0:
             img_data = img_data.cuda(opt.gpu_id)
@@ -88,7 +88,7 @@ if __name__ == '__main__':
         classes, class_ = capnet(x, random=opt.random)
 
         output_dis = class_.data.cpu()
-        output_pred = np.zeros((output_dis.shape[0]), dtype=np.float)
+        output_pred = np.zeros((output_dis.shape[0]), dtype=float)
 
         for i in range(output_dis.shape[0]):
             if output_dis[i,1] >= output_dis[i,0]:
@@ -98,7 +98,7 @@ if __name__ == '__main__':
 
         tol_label = np.concatenate((tol_label, img_label))
         tol_pred = np.concatenate((tol_pred, output_pred))
-        
+
         pred_prob = torch.softmax(output_dis, dim=1)
         tol_pred_prob = np.concatenate((tol_pred_prob, pred_prob[:,1].data.numpy()))
 
